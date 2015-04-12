@@ -2,36 +2,36 @@
 
   angular
        .module('subreddits')
-       .controller('UserController', [
-          'userService', '$mdSidenav', '$mdBottomSheet', '$log', '$q',
-          UserController
+       .controller('SubredditController', [
+          'subService','selectedService', '$mdSidenav', '$mdBottomSheet', '$log', '$q',
+          SubredditController
        ]);
 
   /**
-   * Main Controller for the Angular Material Starter App
+   * Subreddit controller for Reddit Radio 
    * @param $scope
    * @param $mdSidenav
    * @param avatarsService
    * @constructor
    */
-  function UserController( userService, $mdSidenav, $mdBottomSheet, $log, $q) {
+  function SubredditController( subService, selectedService, $mdSidenav, $mdBottomSheet, $log, $q) {
     var self = this;
 
-    self.selected     = null;
-    self.users        = [ ];
-    self.selectUser   = selectUser;
-    self.toggleList   = toggleUsersList;
+    self.selected     = selectedService = null;
+    self.subreddits   = [ ];
+    self.selectSub   = selectSub;
+    self.toggleList   = togglesubredditsList;
     self.share        = share;
     self.searchText    = null;
     self.querySearch  = querySearch;
     self.createFilterFor  = createFilterFor;
 
-    // Load all registered users
+    // Load all registered subreddits
 
-    userService
+    subService
           .getSubreddits()
-          .then( function( users ) {
-              self.users = [].concat(users);             
+          .then( function( subs ) {
+              self.subreddits = [].concat(subs);             
           });
 
     // *********************************
@@ -42,7 +42,7 @@
      * First hide the bottomsheet IF visible, then
      * hide or Show the 'left' sideNav area
      */
-    function toggleUsersList() {
+    function togglesubredditsList() {
       var pending = $mdBottomSheet.hide() || $q.when(true);
 
       pending.then(function(){
@@ -54,8 +54,8 @@
      * Select the current avatars
      * @param menuId
      */
-    function selectUser ( user ) {
-      self.selected = angular.isNumber(user) ? $scope.users[user] : user;
+    function selectSub ( user ) {
+      self.selected = angular.isNumber(user) ? $scope.subreddits[user] : user;
       self.toggleList();
     }
 
@@ -65,7 +65,7 @@
      */
     function querySearch (query) {
 
-      var results = query ? self.users.filter( createFilterFor(query) ) : [];
+      var results = query ? self.subreddits.filter( createFilterFor(query) ) : [];
 
       return results;
     }
@@ -90,7 +90,7 @@
         $mdBottomSheet.show({
           parent: angular.element(document.getElementById('content')),
           templateUrl: '/src/subreddits/view/contactSheet.html',
-          controller: [ '$mdBottomSheet', UserSheetController],
+          controller: [ '$mdBottomSheet', subredditsheetController],
           controllerAs: "vm",
           bindToController : true,
           targetEvent: $event
@@ -101,7 +101,7 @@
         /**
          * Bottom Sheet controller for the Avatar Actions
          */
-        function UserSheetController( $mdBottomSheet ) {
+        function subredditsheetController( $mdBottomSheet ) {
           this.user = user;
           this.items = [
             { name: 'Phone'       , icon: 'phone'       , icon_url: 'assets/svg/phone.svg'},

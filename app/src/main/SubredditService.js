@@ -2,17 +2,17 @@
   'use strict';
 
   angular.module('subreddits')
-         .service('userService', ['$q', '$http', UserService]);
+         .service('subService', ['$q', '$http', SubService]);
 
   /**
    * Users DataService
    * Uses embedded, hard-coded data model; acts asynchronously to simulate
    * remote data service call(s).
    *
-   * @returns {{loadAll: Function}}
+   * @returns a promise from $http, that will chain to call my then function.
    * @constructor
    */
-  function UserService($q, $http){
+  function SubService($q, $http){
 
     var mainInfo = null;
     //getting the text file of music subreddits
